@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI駆動開発：Claude Codeハンズオン 基礎編 開催について</title>
+<style>
+  :root {
+    --brand-blue: #1667b2;
+    --brand-blue-dark: #104281;
+    --heading-blue: #1b62b5;
+    --ink: #1f2530;
+    --ink-secondary: #4b5563;
+    --ink-muted: #6b7280;
+    --rule: #d8dde3;
+    --surface: #ffffff;
+    --surface-dim: #f2f4f6;
+    --highlight-yellow: #ffef2e;
+    --accent-yellow: #f5c518;
+    /* ドーナツグラフ：順序ランプ（検証済み） */
+    --seq-1: #86b6ef;
+    --seq-2: #5598e7;
+    --seq-3: #2a78d6;
+    --seq-4: #1c5cab;
+    --seq-5: #104281;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", Meiryo, sans-serif;
+    background: #e6e9ed;
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 32px 16px 64px;
+  }
+
+  .deck {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    counter-reset: slide;
+  }
+
+  /* ===== スライド共通 ===== */
+  .slide {
+    background: var(--surface);
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+    box-shadow: 0 4px 18px rgba(16, 40, 70, .14);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    font-size: clamp(11px, 1.35vw, 17px);
+  }
+
+  .slide-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1em 2em .9em;
+    border-bottom: 1px solid var(--rule);
+  }
+  .slide-header h2 {
+    color: var(--heading-blue);
+    font-size: 1.55em;
+    font-weight: 800;
+    letter-spacing: .01em;
+  }
+
+  .slide-body {
+    flex: 1 1 auto;
+    padding: 1.4em 2.4em;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide-footer {
+    flex: 0 0 auto;
+    background: var(--brand-blue);
+    color: #fff;
+    text-align: center;
+    font-size: .78em;
+    padding: .45em 0;
+  }
+
+  .slide { counter-increment: slide; }
+  .slide::after {
+    content: counter(slide);
+    position: absolute;
+    right: 1.4em;
+    bottom: .32em;
+    color: #fff;
+    font-size: .82em;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+  }
+
+  /* ===== ロゴ ===== */
+  .logo { display: inline-flex; align-items: center; gap: .45em; }
+  .logo svg { display: block; }
+  .logo .wordmark {
+    font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 800;
+    letter-spacing: .06em;
+    color: #17202b;
+  }
+  .slide-header .logo .wordmark { font-size: 1.25em; }
+  .slide-header .logo svg { width: 1.9em; height: 1.9em; }
+
+  /* ===== 扉スライド（青全面） ===== */
+  .slide.divider .divider-band {
+    flex: 1 1 auto;
+    background: var(--brand-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 1.5em;
+  }
+  .slide.divider .divider-band h2 {
+    color: #fff;
+    font-size: 3.2em;
+    font-weight: 800;
+    line-height: 1.35;
+  }
+  .slide.divider .top-strip {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    padding: .9em 2em;
+    background: #fff;
+  }
+  .slide.divider .slide-footer { background: var(--brand-blue); border-top: 2px solid rgba(255,255,255,.35); }
+
+  /* ===== 表紙 ===== */
+  .cover-body {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    align-items: center;
+    gap: 3em;
+    padding: 2em 3.5em;
+    min-height: 0;
+  }
+  .cover-logo { text-align: center; }
+  .cover-logo svg { width: 55%; height: auto; max-width: 260px; }
+  .cover-logo .wordmark {
+    display: block;
+    font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 800;
+    font-size: 2em;
+    letter-spacing: .08em;
+    color: #17202b;
+    margin-top: .4em;
+  }
+  .cover-title h1 {
+    color: var(--heading-blue);
+    font-size: 2.5em;
+    font-weight: 800;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .cover-title hr { border: none; border-top: 1px solid var(--rule); margin: 1em 0; }
+  .cover-title .subtitle { text-align: center; font-size: 1.35em; line-height: 1.6; }
+  .cover-title .version {
+    margin-top: 1.4em;
+    background: var(--surface-dim);
+    text-align: center;
+    padding: .7em;
+    font-size: .95em;
+    border-radius: 3px;
+  }
+  .cover-dates {
+    margin-top: 1.2em;
+    display: flex;
+    gap: .8em;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cover-dates .chip {
+    border: 2px solid var(--brand-blue);
+    color: var(--brand-blue);
+    border-radius: 999px;
+    padding: .3em 1em;
+    font-weight: 700;
+    font-size: .95em;
+    white-space: nowrap;
+  }
+
+  /* ===== 汎用パーツ ===== */
+  .lead { font-size: 1.15em; margin-bottom: 1em; }
+  .lead strong { color: var(--heading-blue); }
+
+  .highlight-box {
+    background: var(--highlight-yellow);
+    text-align: center;
+    font-weight: 800;
+    font-size: 1.35em;
+    line-height: 1.7;
+    padding: 1em 1.2em;
+    margin-top: auto;
+  }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2em; }
+  .card {
+    border: 1px solid var(--rule);
+    border-top: 4px solid var(--brand-blue);
+    border-radius: 4px;
+    padding: 1.1em 1.2em;
+    background: #fff;
+  }
+  .card .card-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9em; height: 1.9em;
+    border-radius: 50%;
+    background: var(--brand-blue);
+    color: #fff;
+    font-weight: 800;
+    margin-bottom: .6em;
+  }
+  .card h3 { color: var(--heading-blue); font-size: 1.1em; margin-bottom: .4em; line-height: 1.4; }
+  .card p { font-size: .95em; color: var(--ink-secondary); }
+
+  .cards.compact { gap: .9em; }
+  .cards.compact .card { padding: .75em 1em; }
+  .cards.compact .card .card-num { width: 1.7em; height: 1.7em; margin-bottom: .35em; font-size: .9em; }
+  .cards.compact .card h3 { font-size: 1em; margin-bottom: .3em; }
+  .cards.compact .card p { font-size: .88em; }
+  table.roles.compact { font-size: .88em; }
+  table.roles.compact th, table.roles.compact td { padding: .45em .7em; }
+
+  .numbered { list-style: none; display: flex; flex-direction: column; gap: .9em; }
+  .numbered li { display: flex; gap: .9em; align-items: baseline; }
+  .numbered .n {
+    flex: 0 0 auto;
+    font-weight: 800;
+    color: var(--brand-blue);
+    border: 2px solid var(--brand-blue);
+    border-radius: 4px;
+    padding: 0 .45em;
+    font-size: .95em;
+  }
+  .numbered li p strong { color: var(--heading-blue); }
+
+  .note-link { margin-top: .9em; font-size: .9em; }
+  .note-link a { color: var(--brand-blue); }
+
+  /* 比較2カラム */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; flex: 1 1 auto; min-height: 0; }
+  .compare .panel {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.1em 1.3em;
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+  }
+  .compare .panel.bad { background: var(--surface-dim); }
+  .compare .panel.good { background: #eef5fd; border-color: #bcd6f2; }
+  .compare .panel h3 { font-size: 1.15em; line-height: 1.4; }
+  .compare .panel.bad h3 { color: var(--ink-secondary); }
+  .compare .panel.good h3 { color: var(--heading-blue); }
+  .compare .panel .tag {
+    align-self: flex-start;
+    font-size: .78em;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: .15em .9em;
+    color: #fff;
+  }
+  .compare .panel.bad .tag { background: #6b7280; }
+  .compare .panel.good .tag { background: var(--brand-blue); }
+  .compare .panel ul { padding-left: 1.2em; font-size: .95em; color: var(--ink-secondary); display: flex; flex-direction: column; gap: .35em; }
+
+  .quote-bar {
+    margin-top: 1.1em;
+    border-left: 6px solid var(--accent-yellow);
+    background: var(--surface-dim);
+    padding: .8em 1.2em;
+    font-size: .98em;
+  }
+
+  .callout-yellow {
+    background: var(--highlight-yellow);
+    font-weight: 800;
+    text-align: center;
+    padding: .7em 1em;
+    font-size: 1.35em;
+    margin-bottom: .8em;
+  }
+
+  /* 役割テーブル */
+  .role-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.6em; flex: 1 1 auto; min-height: 0; align-items: start; }
+  table.roles { width: 100%; border-collapse: collapse; font-size: .98em; }
+  table.roles th, table.roles td { border: 1px solid var(--rule); padding: .65em .8em; text-align: left; }
+  table.roles thead th { background: var(--brand-blue-dark); color: #fff; font-weight: 700; }
+  table.roles thead th:nth-child(2) { background: var(--brand-blue); }
+  table.roles thead th:nth-child(3) { background: #5f6b7a; }
+  table.roles tbody th { background: var(--surface-dim); font-weight: 700; white-space: nowrap; }
+  .role-side h3 { color: var(--heading-blue); font-size: 1.1em; margin-bottom: .5em; letter-spacing: .15em; }
+  .role-side p { font-size: .98em; }
+  .role-side .quote-bar { margin-top: 1em; font-size: .92em; }
+
+  /* アジェンダ */
+  .agenda-layout { display: grid; grid-template-columns: 1.35fr 1fr; gap: 2em; flex: 1 1 auto; min-height: 0; }
+  .agenda-list { list-style: none; display: flex; flex-direction: column; }
+  .agenda-list li {
+    display: flex;
+    align-items: center;
+    gap: .9em;
+    padding: .55em .3em;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .agenda-list .no {
+    flex: 0 0 auto;
+    width: 1.8em; height: 1.8em;
+    border-radius: 50%;
+    background: var(--brand-blue);
+    color: #fff;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .9em;
+  }
+  .agenda-list .item { flex: 1 1 auto; font-weight: 600; }
+  .agenda-list .min {
+    flex: 0 0 auto;
+    color: var(--brand-blue);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .date-cards { display: flex; flex-direction: column; gap: 1em; }
+  .date-cards h3 { color: var(--heading-blue); font-size: 1.1em; }
+  .date-card {
+    border: 2px solid var(--brand-blue);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .date-card .d-head { background: var(--brand-blue); color: #fff; font-weight: 700; padding: .35em .9em; font-size: .95em; }
+  .date-card .d-body { padding: .7em .9em; }
+  .date-card .d-body .date { font-size: 1.25em; font-weight: 800; }
+  .date-card .d-body .time { color: var(--ink-secondary); font-weight: 600; }
+  .date-note { font-size: .85em; color: var(--ink-muted); }
+
+  /* 対象者スライド（ドーナツ） */
+  .survey-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.5em; flex: 1 1 auto; min-height: 0; align-items: center; }
+  .donut-wrap { text-align: center; }
+  .donut-wrap svg { width: min(100%, 340px); height: auto; }
+  .donut-caption { font-size: .85em; color: var(--ink-muted); margin-top: .3em; }
+  .survey-side h3 { color: var(--heading-blue); font-size: 1.15em; margin-bottom: .6em; line-height: 1.5; }
+  .legend { list-style: none; display: flex; flex-direction: column; gap: .45em; font-size: .95em; }
+  .legend li { display: flex; align-items: center; gap: .6em; }
+  .legend .sw { flex: 0 0 auto; width: .9em; height: .9em; border-radius: 2px; }
+  .legend .pct { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .legend li.target { font-weight: 700; }
+  .legend li.dim { color: var(--ink-muted); }
+  .target-note {
+    margin-top: .9em;
+    background: #eef5fd;
+    border: 1px solid #bcd6f2;
+    border-radius: 4px;
+    padding: .7em .9em;
+    font-size: .95em;
+  }
+  .target-note strong { color: var(--heading-blue); }
+  .donut-seg { transition: opacity .15s; cursor: default; }
+  .donut-seg:hover { opacity: .8; }
+
+  /* 印刷 */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .deck { max-width: none; gap: 0; }
+    .slide { box-shadow: none; border-radius: 0; page-break-after: always; }
+  }
+
+  @media (max-width: 760px) {
+    .slide { aspect-ratio: auto; font-size: 14px; }
+    .cover-body, .cards, .compare, .role-layout, .agenda-layout, .survey-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- ============ 1. 表紙 ============ -->
+  <section class="slide" aria-label="表紙">
+    <div class="cover-body">
+      <div class="cover-logo">
+        <svg viewBox="0 0 100 100" role="img" aria-label="CREATIONLINE ロゴ">
+          <path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/>
+          <path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/>
+          <path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/>
+        </svg>
+        <span class="wordmark">CREATIONLINE</span>
+      </div>
+      <div class="cover-title">
+        <h1>AI駆動開発<br>Claude Codeハンズオン<br>基礎編</h1>
+        <hr>
+        <p class="subtitle">開発ライフサイクルの<br>高速化とユーザ価値向上に向けて</p>
+        <div class="cover-dates">
+          <span class="chip">7/10 (金) 13:00–14:00</span>
+          <span class="chip">7/13 (月) 14:00–15:00</span>
+        </div>
+        <p class="version">v1：2026/7/6 初版公開</p>
+      </div>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+  <!-- ============ 2. この資料の要点 ============ -->
+  <section class="slide" aria-label="この資料の要点">
+    <div class="slide-header">
+      <h2>この資料でお伝えしたいこと</h2>
+      <span class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/><path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/><path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/></svg><span class="wordmark">CREATIONLINE</span></span>
+    </div>
+    <div class="slide-body">
+      <p class="lead">社内向けに <strong>Claude Code ハンズオン（基礎編）</strong> を開催します。要点は次の3つです。</p>
+      <div class="cards" style="flex:1 1 auto; align-content:center;">
+        <div class="card">
+          <span class="card-num">1</span>
+          <h3>なぜハンズオンを行うのか</h3>
+          <p>ソフトウェア開発だけではなく一般業務にも使えるデファクトのAIエージェントに。全社・全員が使いこなせる状態を目指します。</p>
+        </div>
+        <div class="card">
+          <span class="card-num">2</span>
+          <h3>何をやるか・いつやるか</h3>
+          <p>基本操作から設定ファイル・実践まで1時間のハンズオン。<strong>7/10(金) 13時</strong>・<strong>7/13(月) 14時</strong> の2回、同内容で開催します。</p>
+        </div>
+        <div class="card">
+          <span class="card-num">3</span>
+          <h3>誰のための会か</h3>
+          <p>「使ったことがない・いまは使っていない・稀に使う」方が主対象。社内アンケートでは回答者の<strong>約55%</strong>がこの層です。</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+  <!-- ============ 3. Claude Codeとは？ ============ -->
+  <section class="slide" aria-label="Claude Codeとは">
+    <div class="slide-header">
+      <h2>Claude Codeとは？</h2>
+      <span class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/><path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/><path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/></svg><span class="wordmark">CREATIONLINE</span></span>
+    </div>
+    <div class="slide-body">
+      <p class="lead"><strong>Anthropic社が提供している、CLIベースのアプリケーション開発環境</strong>です。</p>
+      <div class="cards" style="flex:1 1 auto; align-content:center;">
+        <div class="card">
+          <h3>ターミナルで動く<br>コーディングエージェント</h3>
+          <p>自然言語で指示するだけで、コードベースの理解・ファイル編集・バグ修正・テスト実行・コミットやPR作成まで行います。</p>
+        </div>
+        <div class="card">
+          <h3>アプリ開発以外の<br>一般業務にも使える</h3>
+          <p>Skills・Agents などの機能により、資料作成や調査といった一般業務タスクの標準化・自動化にも幅広く活用できます。</p>
+        </div>
+        <div class="card">
+          <h3>IDEとの<br>インテグレーション</h3>
+          <p>Cursor などの IDE との連携機能があり、使い慣れたエディタからも利用できます。</p>
+        </div>
+      </div>
+      <p class="note-link">公式ドキュメント：<a href="https://docs.anthropic.com/ja/docs/claude-code/overview">https://docs.anthropic.com/ja/docs/claude-code/overview</a></p>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+  <!-- ============ 4. 正式提供の背景 ============ -->
+  <section class="slide" aria-label="Claude Code正式提供の背景">
+    <div class="slide-header">
+      <h2>Claude Code正式提供とハンズオン実施の背景</h2>
+      <span class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/><path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/><path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/></svg><span class="wordmark">CREATIONLINE</span></span>
+    </div>
+    <div class="slide-body">
+      <p class="lead"><strong>Claude Codeの機能強化と、社内での利用ニーズの高まり</strong>が背景にあります。</p>
+      <ul class="numbered" style="margin-bottom:1.2em;">
+        <li><span class="n">1</span><p><strong>ツールの主役が交代しつつある</strong>：AI駆動開発ツールは「Cursor」がデファクトでしたが、昨今は Claude Code の機能追加が著しく、より高度な応用が可能になっています。</p></li>
+        <li><span class="n">2</span><p><strong>利用ニーズの高まり</strong>：社内でも「玄米茶」などのプロダクトを Claude Code を使って開発しています。</p></li>
+        <li><span class="n">3</span><p><strong>適用範囲の広さ</strong>：アプリケーション開発だけではなく、一般業務タスクでも利用できます。</p></li>
+      </ul>
+      <div class="highlight-box">
+        生成AIで開発・業務の効率化＆自律化（自動化）のために、<br>
+        デファクトのAIエージェントとも言える Claude / Claude Code を<br>
+        全社・全員がより高度に使いこなせる状態を作る。
+      </div>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+  <!-- ============ 5. 目指す姿（馬車と自動車） ============ -->
+  <section class="slide" aria-label="目指す姿">
+    <div class="slide-header">
+      <h2>目指す姿：「AIによって動く状態」</h2>
+      <span class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/><path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/><path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/></svg><span class="wordmark">CREATIONLINE</span></span>
+    </div>
+    <div class="slide-body">
+      <div class="callout-yellow">目指すところは「AIによる効率化」ではなく「AIによって動く状態」</div>
+      <div class="compare">
+        <div class="panel bad">
+          <span class="tag">Retrofit（後付け）の罠</span>
+          <h3>既存プロセスにAIを無理やり当てはめる</h3>
+          <ul>
+            <li>既存のアジャイル/スクラム（2週間スプリント）にAIを後付けする</li>
+            <li>課題：AIの速度（秒単位）と人間中心のプロセス（週単位）が合わない</li>
+            <li>結果：従来の儀式（スタンドアップ、レトロスペクティブ）がボトルネックとなり、AIの潜在能力を殺してしまう</li>
+          </ul>
+        </div>
+        <div class="panel good">
+          <span class="tag">Reimagine（再設計）の必要性</span>
+          <h3>AIを中心に据えてプロセス全体を再設計する</h3>
+          <ul>
+            <li>First Principles Thinking：ソフトウェア開発の根本（意図からコードへの変換）に立ち返る</li>
+            <li>AI-Native：AIを中心的な「協力者」として据え、プロセス全体を再設計する</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote-bar">「AIが単純作業の境界を曖昧にする今、ベロシティ（Velocity）のような指標は意味をなさなくなる。代わりに『ビジネス価値』そのものを指標とすべきだ」</div>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+  <!-- ============ 6. 労働集約型からの脱却 ============ -->
+  <section class="slide" aria-label="労働集約型からの脱却">
+    <div class="slide-header">
+      <h2>なぜ「AIによって動く状態」なのか？⇨「労働集約型からの脱却」</h2>
+      <span class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/><path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/><path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/></svg><span class="wordmark">CREATIONLINE</span></span>
+    </div>
+    <div class="slide-body">
+      <p class="lead">人手の量で成果が決まる「労働集約型」から抜け出すには、<strong>AIを前提に仕事の構造そのものを変える</strong>必要があります。</p>
+      <div class="cards compact" style="margin-bottom:1em;">
+        <div class="card">
+          <span class="card-num">1</span>
+          <h3>プロセスの転換</h3>
+          <p>既存の進め方にAIを後付けするのではなく、生成AIを前提に開発・業務プロセスを再設計する。</p>
+        </div>
+        <div class="card">
+          <span class="card-num">2</span>
+          <h3>役割の転換</h3>
+          <p>「AIが主、人間が副」へ。AIが実行の主体となり、人間は監査と最終承認に軸足を移す（下表）。</p>
+        </div>
+        <div class="card">
+          <span class="card-num">3</span>
+          <h3>スキルの転換</h3>
+          <p>一部の詳しい人だけでなく、全社・全員がAIエージェントを使いこなす。<strong>→ その第一歩が本ハンズオン</strong></p>
+        </div>
+      </div>
+      <div class="role-layout" style="margin-bottom:1em;">
+        <table class="roles compact">
+          <thead>
+            <tr><th>役割</th><th>AIエージェント（主体）</th><th>人間（支援・監査）</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>意思決定</th><td>戦略立案、タスク優先順位付け</td><td>ミッション定義、最終承認</td></tr>
+            <tr><th>実行</th><td>コード生成、ドキュメント作成、運用</td><td>物理的アクション、現場対応</td></tr>
+            <tr><th>管理</th><td>進捗モニタリング、品質チェック</td><td>倫理的監査、リスク責任</td></tr>
+          </tbody>
+        </table>
+        <div class="role-side">
+          <div class="quote-bar" style="margin-top:0;">従来の『AIによる業務効率化』は部分最適に過ぎない。我々は『AIが自律的に業務を進める AI-Driven Company のプラットフォーム』を構築する。</div>
+        </div>
+      </div>
+      <div class="highlight-box">
+        この3つが揃うと、生成AIの進化がそのまま自社の生産性向上に直結する<br>「AIによって動く状態」になる。
+      </div>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+  <!-- ============ 7. アジェンダと開催日 ============ -->
+  <section class="slide" aria-label="アジェンダと開催日">
+    <div class="slide-header">
+      <h2>Claude Code ハンズオン基礎編：内容と開催日</h2>
+      <span class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/><path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/><path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/></svg><span class="wordmark">CREATIONLINE</span></span>
+    </div>
+    <div class="slide-body">
+      <div class="agenda-layout">
+        <div>
+          <p class="lead"><strong>内容</strong>（約1時間・手を動かしながら進めます）</p>
+          <ol class="agenda-list">
+            <li><span class="no">1</span><span class="item">Claude Code とは？</span><span class="min">10分</span></li>
+            <li><span class="no">2</span><span class="item">基本的な使い方</span><span class="min">15分</span></li>
+            <li><span class="no">3</span><span class="item">Claude Code を使ってみよう！</span><span class="min">5分</span></li>
+            <li><span class="no">4</span><span class="item">コマンド</span><span class="min">8分</span></li>
+            <li><span class="no">5</span><span class="item">Claude Code の設定ファイル</span><span class="min">4分</span></li>
+            <li><span class="no">6</span><span class="item">実践</span><span class="min">–</span></li>
+          </ol>
+        </div>
+        <div class="date-cards">
+          <h3>開催日（2回とも同じ内容です）</h3>
+          <div class="date-card">
+            <div class="d-head">第1回</div>
+            <div class="d-body">
+              <div class="date">7月10日（金）</div>
+              <div class="time">13:00〜14:00</div>
+            </div>
+          </div>
+          <div class="date-card">
+            <div class="d-head">第2回</div>
+            <div class="d-body">
+              <div class="date">7月13日（月）</div>
+              <div class="time">14:00〜15:00</div>
+            </div>
+          </div>
+          <p class="date-note">※ ご都合のよい回にご参加ください。</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+  <!-- ============ 8. 対象者 ============ -->
+  <section class="slide" aria-label="対象者">
+    <div class="slide-header">
+      <h2>Claude Code ハンズオン基礎編：対象者の方</h2>
+      <span class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/><path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/><path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/></svg><span class="wordmark">CREATIONLINE</span></span>
+    </div>
+    <div class="slide-body">
+      <div class="survey-layout">
+        <div class="donut-wrap">
+          <!-- 普段の業務でClaude Codeを使っていますか？（74件） -->
+          <svg viewBox="0 0 240 240" role="img" aria-label="普段の業務でClaude Codeを使っていますか？の回答内訳。使ったことがない14.9%、いまは使っていない14.9%、稀に使っている25.7%、頻繁に使っている5.3%、毎日使っている39.2%。">
+            <g transform="rotate(-90 120 120)">
+              <!-- r=78, C=490.09 / 各セグメントは dasharray、白2pxギャップは stroke で表現 -->
+              <circle class="donut-seg" cx="120" cy="120" r="78" fill="none" stroke="#86b6ef" stroke-width="40"
+                stroke-dasharray="73.02 417.07" stroke-dashoffset="0"><title>使ったことがない 14.9%（11件）</title></circle>
+              <circle class="donut-seg" cx="120" cy="120" r="78" fill="none" stroke="#5598e7" stroke-width="40"
+                stroke-dasharray="73.02 417.07" stroke-dashoffset="-73.02"><title>いまは使っていない 14.9%（11件）</title></circle>
+              <circle class="donut-seg" cx="120" cy="120" r="78" fill="none" stroke="#2a78d6" stroke-width="40"
+                stroke-dasharray="125.96 364.13" stroke-dashoffset="-146.04"><title>稀に使っている 25.7%（19件）</title></circle>
+              <circle class="donut-seg" cx="120" cy="120" r="78" fill="none" stroke="#1c5cab" stroke-width="40"
+                stroke-dasharray="25.97 464.12" stroke-dashoffset="-272.00"><title>頻繁に使っている 5.3%（4件）</title></circle>
+              <circle class="donut-seg" cx="120" cy="120" r="78" fill="none" stroke="#104281" stroke-width="40"
+                stroke-dasharray="192.12 297.97" stroke-dashoffset="-297.97"><title>毎日使っている 39.2%（29件）</title></circle>
+              <!-- セグメント間の2pxスペーサー（境界5本） -->
+              <g stroke="#ffffff" stroke-width="42" fill="none">
+                <circle cx="120" cy="120" r="78" stroke-dasharray="2 488.09" stroke-dashoffset="1"/>
+                <circle cx="120" cy="120" r="78" stroke-dasharray="2 488.09" stroke-dashoffset="-72.02"/>
+                <circle cx="120" cy="120" r="78" stroke-dasharray="2 488.09" stroke-dashoffset="-145.04"/>
+                <circle cx="120" cy="120" r="78" stroke-dasharray="2 488.09" stroke-dashoffset="-271.00"/>
+                <circle cx="120" cy="120" r="78" stroke-dasharray="2 488.09" stroke-dashoffset="-296.97"/>
+              </g>
+            </g>
+            <text x="120" y="112" text-anchor="middle" font-size="30" font-weight="800" fill="#1f2530">55.5%</text>
+            <text x="120" y="134" text-anchor="middle" font-size="12" fill="#4b5563">が今回の主対象層</text>
+          </svg>
+          <p class="donut-caption">普段の業務で「Claude Code」を使っていますか？（74件の回答）</p>
+        </div>
+        <div class="survey-side">
+          <h3>まだ使っていない・使い始めたばかりの方のための会です</h3>
+          <ul class="legend">
+            <li class="target"><span class="sw" style="background:#86b6ef"></span>使ったことがない<span class="pct">14.9%</span></li>
+            <li class="target"><span class="sw" style="background:#5598e7"></span>いまは使っていない<span class="pct">14.9%</span></li>
+            <li class="target"><span class="sw" style="background:#2a78d6"></span>稀に使っている<span class="pct">25.7%</span></li>
+            <li class="dim"><span class="sw" style="background:#1c5cab"></span>頻繁に使っている<span class="pct">5.3%</span></li>
+            <li class="dim"><span class="sw" style="background:#104281"></span>毎日使っている<span class="pct">39.2%</span></li>
+          </ul>
+          <div class="target-note">
+            社内アンケートでは、上の3つの層（<strong>使ったことがない／いまは使っていない／稀に使っている</strong>）が合計 <strong>約55%</strong>。この層の方々が今回の基礎編の主対象です。すでに使いこなしている方の参加も歓迎します。
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+  <!-- ============ 9. クロージング ============ -->
+  <section class="slide divider" aria-label="クロージング">
+    <div class="top-strip">
+      <span class="logo"><svg viewBox="0 0 100 100" aria-hidden="true" style="width:1.9em;height:1.9em;"><path d="M50 22 C29 22 15 37 15 55 C15 74 30 88 50 88 C70 88 85 74 85 55 C85 42 78 33 70 28 L63 39 C69 43 72 48 72 55 C72 66 62 75 50 75 C38 75 28 66 28 55 C28 44 38 35 50 35 C53 35 56 33 57 30 C59 25 55 22 50 22 Z" fill="#1667b2"/><path d="M57 30 C60 22 68 18 74 20 C70 24 68 28 70 28 L63 39 C60 36 55 34 57 30 Z" fill="#1667b2"/><path d="M76 8 L79.5 16.5 L88 20 L79.5 23.5 L76 32 L72.5 23.5 L64 20 L72.5 16.5 Z" fill="#f5c518"/></svg><span class="wordmark" style="font-size:1.25em;">CREATIONLINE</span></span>
+    </div>
+    <div class="divider-band">
+      <h2>Let’s Change AI駆動！</h2>
+    </div>
+    <div class="slide-footer">Copyright © 2026 CREATIONLINE, INC. All Rights Reserved.</div>
+  </section>
+
+</div>
+</body>
+</html>
