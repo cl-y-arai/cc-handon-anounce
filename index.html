@@ -230,8 +230,8 @@
   .cards.compact .card .card-num { width: 1.7em; height: 1.7em; margin-bottom: .35em; font-size: .9em; }
   .cards.compact .card h3 { font-size: 1em; margin-bottom: .3em; }
   .cards.compact .card p { font-size: .88em; line-height: 1.5; }
-  table.roles.compact { font-size: .88em; }
-  table.roles.compact th, table.roles.compact td { padding: .38em .7em; }
+  table.roles.compact { font-size: .8em; }
+  table.roles.compact th, table.roles.compact td { padding: .38em .6em; }
 
   .numbered { list-style: none; display: flex; flex-direction: column; gap: .9em; }
   .numbered li { display: flex; gap: .9em; align-items: baseline; }
@@ -294,7 +294,7 @@
   }
 
   /* 役割テーブル */
-  .role-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.6em; flex: 1 1 auto; min-height: 0; align-items: start; }
+  .role-layout { display: grid; grid-template-columns: 1.7fr 1fr; gap: 1.4em; flex: 1 1 auto; min-height: 0; align-items: start; }
   table.roles { width: 100%; border-collapse: collapse; font-size: .98em; }
   table.roles th, table.roles td { border: 1px solid var(--rule); padding: .65em .8em; text-align: left; }
   table.roles thead th { background: var(--brand-blue-dark); color: #fff; font-weight: 700; }
@@ -546,7 +546,7 @@
         <div class="card">
           <span class="card-num">3</span>
           <h3>スキルの転換</h3>
-          <p>一部の詳しい人だけでなく、全社・全員がAIエージェントを使いこなす。<strong>→ その第一歩が本ハンズオン</strong></p>
+          <p>一部の詳しい人だけでなく、全社・全員がAIエージェントを使いこなす。<strong style="color:#d32f2f;">→ その第一歩が本ハンズオン</strong></p>
         </div>
       </div>
       <div class="role-layout" style="margin-bottom:1em;">
@@ -555,7 +555,7 @@
             <tr><th>役割</th><th>AIエージェント（主体）</th><th>人間（支援・監査）</th></tr>
           </thead>
           <tbody>
-            <tr><th>意思決定</th><td>戦略立案、タスク優先順位付け</td><td>ミッション定義、最終承認</td></tr>
+            <tr><th>意思決定</th><td>戦略立案、タスク優先順位付け</td><td>ミッション定義、制約事項定義、確認＆承認</td></tr>
             <tr><th>実行</th><td>コード生成、ドキュメント作成、運用</td><td>物理的アクション、現場対応</td></tr>
             <tr><th>管理</th><td>進捗モニタリング、品質チェック</td><td>倫理的監査、リスク責任</td></tr>
           </tbody>
